@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YT Video Downloader | HD MP4/MP3 Converter</title>
+    <meta name="description" content="Free YouTube video downloader - Download HD videos and convert to MP3 instantly. Support all formats and devices.">
+    <meta name="keywords" content="youtube downloader, video converter, mp3 converter, free video download">
+    
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-YOUR_AD_ID"
+    crossorigin="anonymous"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f0f2f5;
+        }
+
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .input-section {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            max-width: 600px;
+        }
+
+        button {
+            background: #ff0000;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #cc0000;
+        }
+
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            margin: 20px 0;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .download-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .quality-option {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .ad-section {
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            .download-options {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- AdSense Top Banner -->
+    <div class="ad-section">
+        <ins class="adsbygoogle"
+            style="display:block"
+            data-ad-client="ca-pub-YOUR_AD_ID"
+            data-ad-slot="1234567890"
+            data-ad-format="auto"
+            data-full-width-responsive="true"></ins>
+        <script>
+            (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+    </div>
+
+    <div class="container">
+        <h1>YouTube Video Downloader</h1>
+        
+        <div class="input-section">
+            <input type="text" id="youtubeUrl" placeholder="Paste YouTube URL here...">
+            <button onclick="fetchVideoInfo()">Fetch Video</button>
+        </div>
+
+        <div class="video-container" id="videoPreview"></div>
+
+        <!-- AdSense Middle Banner -->
+        <div class="ad-section">
+            <ins class="adsbygoogle"
+                style="display:block"
+                data-ad-format="fluid"
+                data-ad-layout-key="-gw-3+1f-3d+2z"
+                data-ad-client="ca-pub-YOUR_AD_ID"
+                data-ad-slot="0987654321"></ins>
+            <script>
+                (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+        </div>
+
+        <div class="download-options" id="downloadOptions"></div>
+    </div>
+
+    <script>
+        function fetchVideoInfo() {
+            const url = document.getElementById('youtubeUrl').value;
+            const videoId = extractVideoId(url);
+            
+            if (!videoId) {
+                alert('Please enter a valid YouTube URL');
+                return;
+            }
+
+            // Show loading state
+            document.getElementById('downloadOptions').innerHTML = '<p>Loading...</p>';
+
+            // In reality, you would need to call a backend service here
+            // This is just a demonstration
+            const videoInfo = {
+                title: "Sample Video",
+                formats: [
+                    { quality: "1080p", type: "mp4", url: "#" },
+                    { quality: "720p", type: "mp4", url: "#" },
+                    { quality: "360p", type: "mp4", url: "#" },
+                    { quality: "128kbps", type: "mp3", url: "#" }
+                ]
+            };
+
+            displayVideo(videoId);
+            showDownloadOptions(videoInfo.formats);
+        }
+
+        function extractVideoId(url) {
+            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+            const match = url.match(regExp);
+            return (match && match[2].length === 11) ? match[2] : null;
+        }
+
+        function displayVideo(videoId) {
+            const videoPreview = document.getElementById('videoPreview');
+            videoPreview.innerHTML = `
+                <iframe 
+                    src="https://www.youtube.com/embed/${videoId}" 
+                    frameborder="0" 
+                    allowfullscreen>
+                </iframe>
+            `;
+        }
+
+        function showDownloadOptions(formats) {
+            const optionsContainer = document.getElementById('downloadOptions');
+            let html = '';
+
+            formats.forEach(format => {
+                html += `
+                    <div class="quality-option">
+                        <h3>${format.quality} ${format.type.toUpperCase()}</h3>
+                        <button 
+                            onclick="downloadFile('${format.url}', '${format.type}')"
+                            class="${format.type}"
+                        >
+                            Download ${format.type.toUpperCase()}
+                        </button>
+                    </div>
+                `;
+            });
+
+            optionsContainer.innerHTML = html;
+        }
+
+        function downloadFile(url, type) {
+            // This would trigger the actual download
+            alert(`Downloading ${type.toUpperCase()} file...`);
+        }
+    </script>
+
+    <!-- AdSense Bottom Banner -->
+    <div class="ad-section">
+        <ins class="adsbygoogle"
+            style="display:block"
+            data-ad-client="ca-pub-YOUR_AD_ID"
+            data-ad-slot="1357924680"
+            data-ad-format="auto"
+            data-full-width-responsive="true"></ins>
+        <script>
+            (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+    </div>
+</body>
+</html>
